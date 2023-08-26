@@ -3,7 +3,7 @@
 
 # Установка
 Установка плагина состоит из нескольких шагов:
-1. Скачайте данный плагин;
+1. [Скачайте](https://github.com/kekekekkek/KavoFix/archive/refs/heads/main.zip) данный плагин;
 2. Откройте директорию `..\Sven Co-op\svencoop_addon\scripts\plugins` и поместите скрипт туда;
 3. Далее, перейдите в папку `..\Sven Co-op\svencoop` и найдите там файл `default_plugins.txt`;
 4. Откройте файл и вставьте туда следующий текст:
