@@ -17,11 +17,11 @@
 5. Сохраните изменения и запустите игру (сервер).
 
 **ЗАПОМНИТЕ**: Этот скрипт будет работать только на Вашем локальном сервере.<br>
-**ЗАПОМНИТЕ**: Этот скрипт "конфликтует" с другим плагином под названием [ChatColors](). Вам нужно будет модифицировать плагины `KavoFix.as` и `ChatColors.as`, если Вы хотите, чтобы эти два скрипта работали вместе корректно.<br>
-**ЗАПОМНИТЕ**: Команда `!askavofix` необходима для того, чтобы правильно взаимодействовать с другим [плагином]() для [SvenMod](https://github.com/sw1ft747/svenmod).
+**ЗАПОМНИТЕ**: Этот скрипт "конфликтует" с другим плагином под названием [ChatColors](https://github.com/wootguy/ChatColors). Вам нужно будет модифицировать плагины `KavoFix.as` и `ChatColors.as`, если Вы хотите, чтобы эти два скрипта работали вместе корректно.<br>
+**ЗАПОМНИТЕ**: Команда `!askavofix` необходима для того, чтобы правильно взаимодействовать с другим [плагином](https://github.com/kekekekkek/kavofix_for_Sven_Co-op/tree/svenmod) для [SvenMod](https://github.com/sw1ft747/svenmod).
 
 # Результат
 * Скриншот 1<br><br>
-![Screenshot_1]()
+![Screenshot_1](https://github.com/kekekekkek/KavoFix/blob/main/Images/Screenshot_1.png)
 * Скриншот 2<br><br>
-![Screenshot_2]()
+![Screenshot_2](https://github.com/kekekekkek/KavoFix/blob/main/Images/Screenshot_2.png)
