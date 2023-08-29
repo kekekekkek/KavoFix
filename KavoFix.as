@@ -12,13 +12,13 @@ void PluginInit()
 //--------------------------------------------------------------------------------
 /* [+] https://github.com/wootguy/ChatColors#integration-with-other-plugins*/
 
-void PlayerSay(CBaseEntity@ pEntity, string strMsg)
+void PlayerSay(CBaseEntity@ pEntity, ClientSayType cstSayType, string strMsg)
 {
 	NetworkMessage NetMsg(MSG_ALL, NetworkMessages::NetworkMessageType(74)); //SayText
 	
 	NetMsg.WriteByte(pEntity.entindex());
 	NetMsg.WriteByte(2); //CLASS_PLAYER
-	NetMsg.WriteString("" + pEntity.pev.netname + ": " + strMsg + "\n");
+	NetMsg.WriteString(((cstSayType == CLIENTSAY_SAYTEAM) ? "(TEAM) " : "") + pEntity.pev.netname + ": " + strMsg + "\n");
 	
     NetMsg.End();
 }
@@ -95,7 +95,7 @@ HookReturnCode ClientSay(SayParameters@ pSayParam)
 	}
 
 	if (!IsWhiteSpaceOrEmpty(strMsg) and !IsASCII(strMsg))
-		PlayerSay(pPlayer, strMsg);
+		PlayerSay(pPlayer, pSayParam.GetSayType(), strMsg);
 
 	return HOOK_CONTINUE;
 }
