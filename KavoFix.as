@@ -18,8 +18,9 @@ void PlayerSay(CBaseEntity@ pEntity, ClientSayType cstSayType, string strMsg)
 	
 	NetMsg.WriteByte(pEntity.entindex());
 	NetMsg.WriteByte(2); //CLASS_PLAYER
-	NetMsg.WriteString(((cstSayType == CLIENTSAY_SAYTEAM) ? "(TEAM) " : "") + pEntity.pev.netname + ": " + strMsg + "\n");
 	
+	//this shit works only visual
+	NetMsg.WriteString(((cstSayType == CLIENTSAY_SAYTEAM) ? "(TEAM) " : "") + pEntity.pev.netname + ": " + strMsg + "\n");	
     NetMsg.End();
 }
 //--------------------------------------------------------------------------------
