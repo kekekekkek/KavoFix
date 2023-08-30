@@ -14,13 +14,19 @@ void PluginInit()
 
 void PlayerSay(CBaseEntity@ pEntity, ClientSayType cstSayType, string strMsg)
 {
+	/*If you want to send a msg to one or several players you need to use "MSG_ONE" or "MSG_ONE_UNRELIABLE" flag 
+	instead "MSG_ALL" and edict_t of the player*/
+	
+	/*I tried to use "TeamID" and "Classify" from CBaseEntity and "team" from entvars_t to compare but nothing works.
+	All these functions and variables contain the same values. Maybe im doing something wrong?*/
+	
 	NetworkMessage NetMsg(MSG_ALL, NetworkMessages::NetworkMessageType(74)); //SayText
 	
 	NetMsg.WriteByte(pEntity.entindex());
 	NetMsg.WriteByte(2); //CLASS_PLAYER
 	
-	//this shit works only visual
-	NetMsg.WriteString(((cstSayType == CLIENTSAY_SAYTEAM) ? "(TEAM) " : "") + pEntity.pev.netname + ": " + strMsg + "\n");	
+	//This shit works only visual but you really need to use "say_team"?
+	NetMsg.WriteString(((cstSayType == CLIENTSAY_SAYTEAM) ? "(TEAM) " : "") + pEntity.pev.netname + ": " + strMsg + "\n");
     NetMsg.End();
 }
 //--------------------------------------------------------------------------------
@@ -44,7 +50,7 @@ bool IsASCII(string strText)
 	
 	for (int i = 0; i < iLength; i++)
 	{
-		if (strText.opIndex(i) == ' ')
+		if (strText.opIndex(i) == ' ') //32
 			continue;
 	
 		if (strText.opIndex(i) >= '\0' //0
