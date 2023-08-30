@@ -22,7 +22,7 @@ void PlayerSay(CBaseEntity@ pEntity, string strMsg)
 
 void PlayerSayTeam(CBaseEntity@ pEntity, string strMsg)
 {
-	for (int i = 1; i < g_Engine.maxClients; i++)
+	for (int i = 0; i < g_Engine.maxClients + 1; i++)
 	{
 		edict_t@ pCurEdict = g_EngineFuncs.PEntityOfEntIndex(i);
 		CBaseEntity@ pCurEntity = g_EntityFuncs.Instance(pCurEdict);
