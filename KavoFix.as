@@ -9,27 +9,42 @@ void PluginInit()
 	g_Hooks.RegisterHook(Hooks::Player::ClientPutInServer, @ClientPutInServer);
 }
 
-//--------------------------------------------------------------------------------
-/* [+] https://github.com/wootguy/ChatColors#integration-with-other-plugins*/
-
-void PlayerSay(CBaseEntity@ pEntity, ClientSayType cstSayType, string strMsg)
+void PlayerSay(CBaseEntity@ pEntity, string strMsg)
 {
-	/*If you want to send a msg to one or several players you need to use "MSG_ONE" or "MSG_ONE_UNRELIABLE" flag 
-	instead "MSG_ALL" and edict_t of the player*/
-	
-	/*I tried to use "TeamID" and "Classify" from CBaseEntity and "team" from entvars_t to compare but nothing works.
-	All these functions and variables contain the same values. Maybe im doing something wrong?*/
-	
 	NetworkMessage NetMsg(MSG_ALL, NetworkMessages::NetworkMessageType(74)); //SayText
 	
 	NetMsg.WriteByte(pEntity.entindex());
 	NetMsg.WriteByte(2); //CLASS_PLAYER
+	NetMsg.WriteString("" + pEntity.pev.netname + ": " + strMsg + "\n");
 	
-	//This shit works only visual but you really need to use "say_team"?
-	NetMsg.WriteString(((cstSayType == CLIENTSAY_SAYTEAM) ? "(TEAM) " : "") + pEntity.pev.netname + ": " + strMsg + "\n");
     NetMsg.End();
 }
-//--------------------------------------------------------------------------------
+
+void PlayerSayTeam(CBaseEntity@ pEntity, string strMsg)
+{
+	for (int i = 1; i < g_Engine.maxClients; i++)
+	{
+		edict_t@ pCurEdict = g_EngineFuncs.PEntityOfEntIndex(i);
+		CBaseEntity@ pCurEntity = g_EntityFuncs.Instance(pCurEdict);
+		
+		//Check if the player in your team (ally)
+		NetworkMessage NetMsg(MSG_ONE, NetworkMessages::NetworkMessageType(74), ((pEntity.IRelationship(pCurEntity) == R_AL) ? pCurEdict : pEntity.edict())); //SayText
+		
+		NetMsg.WriteByte(pEntity.entindex());
+		NetMsg.WriteByte(2); //CLASS_PLAYER
+		NetMsg.WriteString("(TEAM) " + pEntity.pev.netname + ": " + strMsg + "\n");
+		
+		NetMsg.End();
+	}
+}
+
+bool IsSayTeam(ClientSayType cstSayType)
+{
+	if (cstSayType == CLIENTSAY_SAYTEAM)
+		return true;
+		
+	return false;
+}
 
 bool IsWhiteSpaceOrEmpty(string strText)
 {
@@ -102,7 +117,12 @@ HookReturnCode ClientSay(SayParameters@ pSayParam)
 	}
 
 	if (!IsWhiteSpaceOrEmpty(strMsg) and !IsASCII(strMsg))
-		PlayerSay(pPlayer, pSayParam.GetSayType(), strMsg);
+	{
+		if (!IsSayTeam(pSayParam.GetSayType()))
+			PlayerSay(pPlayer, strMsg);
+		else
+			PlayerSayTeam(pPlayer, strMsg);
+	}
 
 	return HOOK_CONTINUE;
 }
