@@ -28,13 +28,16 @@ void PlayerSayTeam(CBaseEntity@ pEntity, string strMsg)
 		CBaseEntity@ pCurEntity = g_EntityFuncs.Instance(pCurEdict);
 		
 		//Check if the player in your team (ally)
-		NetworkMessage NetMsg(MSG_ONE, NetworkMessages::NetworkMessageType(74), ((pEntity.IRelationship(pCurEntity) == R_AL) ? pCurEdict : pEntity.edict())); //SayText
+		if (pEntity.IRelationship(pCurEntity) == R_AL)
+		{
+			NetworkMessage NetMsg(MSG_ONE, NetworkMessages::NetworkMessageType(74), pCurEdict); //SayText
 		
-		NetMsg.WriteByte(pEntity.entindex());
-		NetMsg.WriteByte(2); //CLASS_PLAYER
-		NetMsg.WriteString("(TEAM) " + pEntity.pev.netname + ": " + strMsg + "\n");
-		
-		NetMsg.End();
+			NetMsg.WriteByte(pEntity.entindex());
+			NetMsg.WriteByte(2); //CLASS_PLAYER
+			NetMsg.WriteString("(TEAM) " + pEntity.pev.netname + ": " + strMsg + "\n");
+			
+			NetMsg.End();
+		}
 	}
 }
 
