@@ -51,9 +51,7 @@ bool IsSayTeam(ClientSayType cstSayType)
 
 bool IsWhiteSpaceOrEmpty(string strText)
 {
-	int iLength = strText.Length();
-
-	for (int i = 0; i < iLength; i++)
+	for (uint i = 0; i < strText.Length(); i++)
 	{
 		if (strText.opIndex(i) != ' ') //32
 			return false;
@@ -63,10 +61,8 @@ bool IsWhiteSpaceOrEmpty(string strText)
 }
 
 bool IsASCII(string strText)
-{
-	int iLength = strText.Length();
-	
-	for (int i = 0; i < iLength; i++)
+{	
+	for (uint i = 0; i < strText.Length(); i++)
 	{
 		if (strText.opIndex(i) == ' ') //32
 			continue;
@@ -121,10 +117,22 @@ HookReturnCode ClientSay(SayParameters@ pSayParam)
 
 	if (!IsWhiteSpaceOrEmpty(strMsg) and !IsASCII(strMsg))
 	{
+		string strConMsg = "";
+	
 		if (!IsSayTeam(pSayParam.GetSayType()))
+		{
+			strConMsg = ("" + pPlayer.pev.netname + ": " + strMsg + "\n");
+			g_EngineFuncs.ClientPrintf(pPlayer, print_console, strConMsg);
+			
 			PlayerSay(pPlayer, strMsg);
+		}
 		else
+		{
+			strConMsg = ("(TEAM) " + pPlayer.pev.netname + ": " + strMsg + "\n");
+			g_EngineFuncs.ClientPrintf(pPlayer, print_console, strConMsg);
+		
 			PlayerSayTeam(pPlayer, strMsg);
+		}
 	}
 
 	return HOOK_CONTINUE;
