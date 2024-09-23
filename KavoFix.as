@@ -11,10 +11,16 @@ void PluginInit()
 
 void PlayerSay(CBaseEntity@ pEntity, string strMsg)
 {
-	NetworkMessage NetMsg(MSG_ALL, NetworkMessages::NetworkMessageType(74)); //SayText
-	
+	NetworkMessage NetMsg(MSG_ALL, NetworkMessages::NetworkMessageType(74));	
 	NetMsg.WriteByte(pEntity.entindex());
-	NetMsg.WriteByte(2); //CLASS_PLAYER
+	
+	/*Всё равно не будет работать с "ChatColors", так как в нём есть проверка на ArgC(). 
+	При написании русских символов скорее всего ArgC() возвращает 0 (не проверял).
+	Только если Вы выполните команды по типу "say 123; say Привет", так как плагин меняет
+	классификацию игрока и ожидает 0.5 секунд для её сброса. Единственный вариант - имзенение 
+	самого плагина "ChatColors".*/
+	
+	NetMsg.WriteByte(pEntity.Classify());
 	NetMsg.WriteString("" + pEntity.pev.netname + ": " + strMsg + "\n");
 	
     NetMsg.End();
@@ -27,13 +33,12 @@ void PlayerSayTeam(CBaseEntity@ pEntity, string strMsg)
 		edict_t@ pCurEdict = g_EngineFuncs.PEntityOfEntIndex(i);
 		CBaseEntity@ pCurEntity = g_EntityFuncs.Instance(pCurEdict);
 		
-		//Check if the player in your team (ally)
 		if (pEntity.IRelationship(pCurEntity) == R_AL)
 		{
-			NetworkMessage NetMsg(MSG_ONE, NetworkMessages::NetworkMessageType(74), pCurEdict); //SayText
+			NetworkMessage NetMsg(MSG_ONE, NetworkMessages::NetworkMessageType(74), pCurEdict);
 		
 			NetMsg.WriteByte(pEntity.entindex());
-			NetMsg.WriteByte(2); //CLASS_PLAYER
+			NetMsg.WriteByte(pEntity.Classify());
 			NetMsg.WriteString("(TEAM) " + pEntity.pev.netname + ": " + strMsg + "\n");
 			
 			NetMsg.End();
@@ -53,7 +58,7 @@ bool IsWhiteSpaceOrEmpty(string strText)
 {
 	for (uint i = 0; i < strText.Length(); i++)
 	{
-		if (strText.opIndex(i) != ' ') //32
+		if (strText.opIndex(i) != ' ')
 			return false;
 	}
 	
@@ -64,11 +69,11 @@ bool IsASCII(string strText)
 {	
 	for (uint i = 0; i < strText.Length(); i++)
 	{
-		if (strText.opIndex(i) == ' ') //32
+		if (strText.opIndex(i) == ' ')
 			continue;
 	
-		if (strText.opIndex(i) >= '\0' //0
-			and strText.opIndex(i) <= '~') //126
+		if (strText.opIndex(i) >= '\0'
+			and strText.opIndex(i) <= '~')
 				return true;
 	}
 	
@@ -101,7 +106,6 @@ HookReturnCode ClientSay(SayParameters@ pSayParam)
 		bShowOnce = true;
 	}
 	
-	//Checks if the plugin exists
 	if (cmdArgs.ArgC() == 1)
 	{
 		string strArg = cmdArgs.Arg(0).ToLowercase();
